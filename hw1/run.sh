@@ -1,8 +1,8 @@
 #!/bin/bash
 mkdir -p build
-pushd ./build || exit
+cd build || exit
 cmake ..
-make
+make -j4
 echo "***************************************************************************************"
-./Transformation
+./Rasterizer
 popd || exit
