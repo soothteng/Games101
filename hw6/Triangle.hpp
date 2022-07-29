@@ -18,15 +18,18 @@ bool rayTriangleIntersect(const Vector3f &v0, const Vector3f &v1,
   Vector3f edge2 = v2 - v0;
   Vector3f pvec = crossProduct(dir, edge2);
   float det = dotProduct(edge1, pvec);
-  if (det == 0 || det < 0) return false;
+  if (det == 0 || det < 0)
+    return false;
 
   Vector3f tvec = orig - v0;
   u = dotProduct(tvec, pvec);
-  if (u < 0 || u > det) return false;
+  if (u < 0 || u > det)
+    return false;
 
   Vector3f qvec = crossProduct(tvec, edge1);
   v = dotProduct(dir, qvec);
-  if (v < 0 || u + v > det) return false;
+  if (v < 0 || u + v > det)
+    return false;
 
   float invDet = 1 / det;
 
@@ -38,10 +41,10 @@ bool rayTriangleIntersect(const Vector3f &v0, const Vector3f &v1,
 }
 
 class Triangle : public Object {
- public:
-  Vector3f v0, v1, v2;  // vertices A, B ,C , counter-clockwise order
-  Vector3f e1, e2;      // 2 edges v1-v0, v2-v0;
-  Vector3f t0, t1, t2;  // texture coords
+public:
+  Vector3f v0, v1, v2; // vertices A, B ,C , counter-clockwise order
+  Vector3f e1, e2;     // 2 edges v1-v0, v2-v0;
+  Vector3f t0, t1, t2; // texture coords
   Vector3f normal;
   Material *m;
 
@@ -67,7 +70,7 @@ class Triangle : public Object {
 };
 
 class MeshTriangle : public Object {
- public:
+public:
   MeshTriangle(const std::string &filename) {
     objl::Loader loader;
     loader.LoadFile(filename);
@@ -111,7 +114,8 @@ class MeshTriangle : public Object {
     bounding_box = Bounds3(min_vert, max_vert);
 
     std::vector<Object *> ptrs;
-    for (auto &tri : triangles) ptrs.push_back(&tri);
+    for (auto &tri : triangles)
+      ptrs.push_back(&tri);
 
     bvh = new BVHAccel(ptrs);
   }
@@ -196,19 +200,23 @@ inline Bounds3 Triangle::getBounds() { return Union(Bounds3(v0, v1), v2); }
 inline Intersection Triangle::getIntersection(Ray ray) {
   Intersection inter;
 
-  if (dotProduct(ray.direction, normal) > 0) return inter;
+  if (dotProduct(ray.direction, normal) > 0)
+    return inter;
   double u, v, t_tmp = 0;
   Vector3f pvec = crossProduct(ray.direction, e2);
   double det = dotProduct(e1, pvec);
-  if (fabs(det) < EPSILON) return inter;
+  if (fabs(det) < EPSILON)
+    return inter;
 
   double det_inv = 1. / det;
   Vector3f tvec = ray.origin - v0;
   u = dotProduct(tvec, pvec) * det_inv;
-  if (u < 0 || u > 1) return inter;
+  if (u < 0 || u > 1)
+    return inter;
   Vector3f qvec = crossProduct(tvec, e1);
   v = dotProduct(ray.direction, qvec) * det_inv;
-  if (v < 0 || u + v > 1) return inter;
+  if (v < 0 || u + v > 1)
+    return inter;
   t_tmp = dotProduct(e2, qvec) * det_inv;
 
   // TODO find ray triangle intersection
